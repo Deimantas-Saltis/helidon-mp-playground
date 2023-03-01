@@ -1,0 +1,38 @@
+server:
+  port: 8080
+javax:
+  sql:
+    DataSource:
+      users:
+        dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+        dataSource:
+          url: jdbc:postgresql://localhost:5432/db?currentSchema=public
+          user: "root"
+          password: "root"
+
+tracing:
+  service: helidon-mp-playground
+  protocol: "http"
+  host: "localhost"
+  port: 14250
+
+mp:
+  messaging:
+    incoming.users:
+        connector: helidon-kafka
+        topic: users
+        auto.offset.reset: latest
+        enable.auto.commit: true
+        group:
+          id: users-consumer
+    outgoing.users-out:
+        topic: users
+        connector: helidon-kafka
+
+    connector:
+      helidon-kafka:
+        bootstrap.servers: localhost:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: com.helidon.config.serialization.KafkaEventSerializer
+        key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value.deserializer: com.helidon.config.serialization.KafkaEventDeserializer
